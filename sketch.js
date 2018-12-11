@@ -3,7 +3,7 @@ var music;
 function preload () {
 	exception = loadImage("2018-12-06.png");
 	soundFormats('mp3', 'ogg');
-  music = loadSound('Exception.mp3');
+  music = loadSound('The Undisputed King of Fate.mp3');
 }
 var soul;
 var NWall;
