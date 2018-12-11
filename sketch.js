@@ -1,9 +1,28 @@
 var exception;
 var music;
+var buttons = {
+	fight: {},
+	act: {},
+	item: {},
+	mercy: {},
+	select: {
+		min: 1,
+		max: 2,
+		current: 1
+	}
+};
 function preload () {
 	exception = loadImage("2018-12-06.png");
+	buttons.fight.inactive = loadImage("Fight1.png");
+	buttons.fight.active = loadImage("Fight2.png");
+	buttons.act.inactive = loadImage("Act1.png");
+	buttons.act.active = loadImage("Act2.png");
+	buttons.item.inactive = loadImage("Item1.png");
+	buttons.item.active = loadImage("Item2.png");
+	buttons.mercy.inactive = loadImage("Mercy1.png");
+	buttons.mercy.active = loadImage("Mercy2.png");
 	soundFormats('mp3', 'ogg');
-  music = loadSound('The Undisputed King of Fate.mp3');
+	music = loadSound('The Undisputed King of Fate.mp3');
 }
 var soul;
 var NWall;
@@ -27,74 +46,85 @@ var fight = false;
 var speed = 5;
 var letters = [];
 var devMode = true;
-var atackNum = 0;
+var attackNum = 0;
 var phase = 0;
+var PT = false;
+
 
 function draw() {
 	if (fight) {
-		background(0);
 		if (!music.isPlaying()) {
 			music.play();
 		}
-		NWall.draw();
-		SWall.draw();
-		EWall.draw();
-		WWall.draw();
-		image(exception, 150, 10);
-		soul.draw();
-		if (keyIsDown(88)) {
-			speed = 2.5 / 2;
-		}
-		else {
-			speed = 2.5;
-		}
-		if (keyIsDown(37) && !EWall.restrain()) {
-			soul.update(-speed, 0);
-		}
-		if (keyIsDown(38) && !NWall.restrain()) {
-			soul.update(0, -speed);
-		}
-		if (keyIsDown(39) && !WWall.restrain()) {
-			soul.update(speed, 0);
-		}
-		if (keyIsDown(40) && ! SWall.restrain()) {
-			soul.update(0, speed);
-		}
-		if (NWall.restrain() && !SWall.restrain()) {
-			soul.constrain(0, NWall.cornerA.y);
-			if (attackNum === 5) {
-				NWall.cornerA.y ++;
-				NWall.cornerB.y ++;
-				EWall.cornerA.y ++;
-				WWall.cornerA.y ++;
+		if (!PT) {
+			background(0);
+			NWall.draw();
+			SWall.draw();
+			EWall.draw();
+			WWall.draw();
+			image(exception, 150, 10);
+			image(buttons.fight.inactive, 0, 340, 100, 40);
+			image(buttons.act.inactive, 100, 340, 100, 40);
+			image(buttons.item.inactive, 200, 340, 100, 40);
+			image(buttons.mercy.inactive, 300, 340, 100, 40);
+			soul.draw();
+			if (keyIsDown(88)) {
+				speed = 2.5 / 2;
+			}
+			else {
+				speed = 2.5;
+			}
+			if (keyIsDown(37) && !EWall.restrain()) {
+				soul.update(-speed, 0);
+			}
+			if (keyIsDown(38) && !NWall.restrain()) {
+				soul.update(0, -speed);
+			}
+			if (keyIsDown(39) && !WWall.restrain()) {
+				soul.update(speed, 0);
+			}
+			if (keyIsDown(40) && ! SWall.restrain()) {
+				soul.update(0, speed);
+			}
+			if (NWall.restrain() && !SWall.restrain()) {
+				soul.constrain(0, NWall.cornerA.y);
+				if (attackNum === 5) {
+					NWall.cornerA.y ++;
+					NWall.cornerB.y ++;
+					EWall.cornerA.y ++;
+					WWall.cornerA.y ++;
+				}
+			}
+			if (SWall.restrain() && !NWall.restrain()) {
+				soul.constrain(0, SWall.cornerA.y - soul.size * 12);
+				if (attackNum === 5) {
+					SWall.cornerA.y --;
+					SWall.cornerB.y --;
+					EWall.cornerB.y --;
+					WWall.cornerB.y --;
+				}
+			}
+			if (EWall.restrain() && !WWall.restrain()) {
+				soul.constrain(EWall.cornerA.x, 0); 
+				if (attackNum === 5) {
+					EWall.cornerA.x ++;
+					EWall.cornerB.x ++;
+					NWall.cornerA.x ++;
+					SWall.cornerA.x ++;
+				}
+			}
+			if (WWall.restrain() && !EWall.restrain()) {
+				soul.constrain(WWall.cornerA.x - soul.size * 12, 0);
+				if (attackNum === 5) {
+					WWall.cornerA.x --;
+					WWall.cornerB.x --;
+					NWall.cornerB.x --;
+					SWall.cornerB.x --;
+				}
 			}
 		}
-		if (SWall.restrain() && !NWall.restrain()) {
-			soul.constrain(0, SWall.cornerA.y - soul.size * 12);
-			if (attackNum === 5) {
-				SWall.cornerA.y --;
-				SWall.cornerB.y --;
-				EWall.cornerB.y --;
-				WWall.cornerB.y --;
-			}
-		}
-		if (EWall.restrain() && !WWall.restrain()) {
-			soul.constrain(EWall.cornerA.x, 0); 
-			if (attackNum === 5) {
-				EWall.cornerA.x ++;
-				EWall.cornerB.x ++;
-				NWall.cornerA.x ++;
-				SWall.cornerA.x ++;
-			}
-		}
-		if (WWall.restrain() && !EWall.restrain()) {
-			soul.constrain(WWall.cornerA.x - soul.size * 12, 0);
-			if (atackNum === 5) {
-				WWall.cornerA.x --;
-				WWall.cornerB.x --;
-				NWall.cornerB.x --;
-				SWall.cornerB.x --;
-			}
+		if (PT) {
+			
 		}
 	}
 	if (devMode) {
@@ -102,13 +132,19 @@ function draw() {
 	}
 }
 function keyPressed () {
-	if (keyCode === 87) {
+	if (keyCode === 87 && !PT) {
 		speed += 0.5;
 		console.log(speed);
 	}
-	else if (keyCode === 83) {
+	else if (keyCode === 83 && !PT) {
 		speed -= 0.5;
 		console.log(speed);
+	}
+	if (keyCode === 37 && PT) {
+		
+	}
+	if (keyCode === 39 && PT) {
+		
 	}
 	if (! devMode) {
 		letters.push (key);
