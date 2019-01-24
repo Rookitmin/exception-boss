@@ -15,6 +15,20 @@ var CreateSoul = function (x, y, size) {
 		rect(this.pos.x, this.pos.y + this.size * 12, this.size * 5, this.size * 3);
 	}
 	
+	this.check = function (x1, y1, x2, y2) {
+		if (this.pos.x - 6 <= x2 && this.pos.x + 15 >= x1) {
+			if (this.pos.y - 1 <= y2 && this.pos.y + 15 >= y1) {
+				return(true);
+			}
+			else {
+				return(false);
+			}
+		}
+		else {
+			return(false);	
+		}
+	}
+	
 	this.update = function (x, y) {
 		this.pos.x += x;
 		this.pos.y += y;
@@ -28,3 +42,46 @@ var CreateSoul = function (x, y, size) {
 		}
 	}
 }
+var arrayInputs = [
+	{min: 0, max: 2}
+];
+var sectionTalk = [
+	"So.", 
+	"...",
+	"You're Here.",
+	"You Finaly Made It.",
+	"Was It Worth It?",
+	"...",
+	". . .",
+	"I know What You're Thinking.",
+	"Just Another Person to Kill.",
+	"Just More LV.",
+	"Just More Power.",
+	"...",
+	". . .",
+	".  .  .",
+	"Well",
+	"...",
+	"I'm Afraid You Don't Know Who I Am.",
+	"What I'm Capable Of.",
+	"Who You've Been Killing All Along.",
+	"...",
+	"I Won't Stand For It.",
+	"You've killed too Many of MY People."
+];
+var PlayingTalk = [
+	"Why do Other People Die?",
+	"...",
+	"I Force Them Into It."
+];
+var selectionWords = [
+	"* You Attempted to Spare Exception.",
+	"* But Nothing Happened.",
+	"* You Attempted to Call For Help.",
+	"* But Nobody Came.",
+	"* "
+];
+
+
+
+
