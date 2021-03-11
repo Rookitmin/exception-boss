@@ -43,7 +43,9 @@ var CreateSoul = function (x, y, size) {
 	}
 }
 var arrayInputs = [
-	{min: 0, max: 2}
+	{min: 0, max: 2},
+	{min: 2, max: 4},
+	{min: 4, max: 6}
 ];
 var sectionTalk = [
 	"So.", 
